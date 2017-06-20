@@ -1,6 +1,6 @@
 const fs  = require('fs'),
   winston = require('winston'),
-  shell   = require('shelljs');
+  shell   = require('shelljs'),
   YAML    = require('yamljs');
 
 let rc;

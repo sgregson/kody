@@ -5,7 +5,7 @@ require('babel-polyfill');
 
 const fs   = require('fs'),
   inquirer = require('inquirer'),
-  winston  = require('winston');
+  winston  = require('winston'),
   YAML     = require('yamljs');
 
 let rc;
