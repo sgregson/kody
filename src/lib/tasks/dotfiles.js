@@ -23,7 +23,7 @@ const PROPS     = {
         }).stdout.trim(),
         dotFiles = shell.find('.')
           .filter(function(file) {
-            return file.match(PROPS.FILE_REGEXP);
+            return file.match(PROPS.FILE_REGEXP) && basename.indexOf('node_modules') === -1;
           });
 
       if (dotFiles.length > 0)
