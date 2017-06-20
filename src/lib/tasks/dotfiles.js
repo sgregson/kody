@@ -33,14 +33,28 @@ const PROPS     = {
             basename = basename.substr(basename.lastIndexOf('/') + 1);
           basename = basename.replace(PROPS.FILE_SUFFIX, '');
           const destination = `${$HOME}/.${basename}`;
-          if (shell.test('-e', destination)) {
-            winston.warn(`${destination} exists, moving to ${destination}.bak`);
-            shell.mv(destination, `${destination}.bak`);
+
+          if (shell.test('-L', destination)) {
+            if (shell.test('-f', destination)) {
+              shell.cat(destination)
+                .to(`${destination}.bak`);
+
+              if (!shell.error())
+                winston.info(`successfully backed up to ${destination}.bak`)
+
+              shell.rm(destination);
+            } else if (shell.test('-d', destination)) {
+              shell.rm(`${destination}.bak`);
+              shell.mv(`${destination}`, `${destination}.bak`);
+
+              if (!shell.error())
+                winston.info(`successfully moved dir to ${destination}.bak/`)
+            }
           }
 
           shell.ln('-sf', source, destination);
           if (!shell.error()) {
-            winston.success(`linked ${basename} to ${destination}`);
+            winston.success(`linked ${source} to ${destination}`);
           } else {
             winston.error(`unable to link ${basename} to ${destination}`);
           }
