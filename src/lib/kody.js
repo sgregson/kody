@@ -50,9 +50,9 @@ const PROPS = {
       rc = JSON.parse(fs.readFileSync(`${process.cwd()}/.kodyrc`, 'utf-8'));
     } catch (err1) {
       try {
-        rc = JSON.parse(YAML.load(`${process.cwd()}/kodyrc.yml`));
-      } catch (err) {
-        throw Error('Error: Missing .kodyrc or kodyrc.yml file');
+        rc = YAML.parse(fs.readFileSync(`${process.cwd()}/kodyrc.yml`, 'utf-8'));
+      } catch (err2) {
+        throw Error('Error: could not find .kodyrc or kodyrc.yml file');
       }
     }
     let files = getTasks(`${__dirname}/tasks`);
