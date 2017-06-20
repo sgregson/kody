@@ -33,7 +33,7 @@ const PROPS     = {
             basename = basename.substr(basename.lastIndexOf('/') + 1);
           basename = basename.replace(PROPS.FILE_SUFFIX, '');
           const destination = `${$HOME}/.${basename}`;
-          if (shell.test('-dL', destination)) {
+          if (shell.test('-L', destination)) {
             winston.warn(`${destination} exists, moving to ${destination}.bak`);
             shell.mv(destination, `${destination}.bak`);
           }
