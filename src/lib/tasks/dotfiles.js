@@ -33,8 +33,17 @@ const PROPS     = {
             basename = basename.substr(basename.lastIndexOf('/') + 1);
           basename = basename.replace(PROPS.FILE_SUFFIX, '');
           const destination = `${$HOME}/.${basename}`;
+          if (shell.test('-dL', destination)) {
+            winston.warn(`${destination} exists, moving to ${destination}.bak`);
+            shell.mv(destination, `${destination}.bak`);
+          }
+
           shell.ln('-sf', source, destination);
-          winston.success(`linked ${basename} to ${destination}`);
+          if (!shell.error()) {
+            winston.success(`linked ${basename} to ${destination}`);
+          } else {
+            winston.error(`unable to link ${basename} to ${destination}`);
+          }
         }
       else
         winston.info(PROPS.EMPTY_MSG);
