@@ -43,12 +43,16 @@ Start out with the `dummy_env` directory as a starting point and extend from the
 `kody` comes with a default task for symlinking files to your `$HOME` directory. The only requirement is that you suffix any files/directories with `.link` in order for those files/directories to be symlinked.
 
 For example; a `kody` configuration directory containing a directory named `atom.link` would be symlinked to `.atom`.
+
 ```js
 WHEREVER/atom.link -> $HOME/.atom
 ```
 
 ### .kodyrc file
 The `.kodyrc` file is used to define variables that will be used by tasks that you define in your configuration. It will also define the order of any defined tasks.
+
+You may also use a `kodyrc.yml` file, with the same API, which can be helpful for including comments in your configuration.
+
 #### An example
 ```json
 {

@@ -1,8 +1,19 @@
-const fs = require('fs'),
+const fs  = require('fs'),
   winston = require('winston'),
-  shell = require('shelljs');
+  shell   = require('shelljs');
+  YAML    = require('yamljs');
 
-const rc = JSON.parse(fs.readFileSync(`${process.cwd()}/.kodyrc`, 'utf-8'));
+let rc;
+try {
+  rc = JSON.parse(fs.readFileSync(`${process.cwd()}/.kodyrc`, 'utf-8'));
+} catch (err1) {
+  try {
+    let ymlrc = YAML.load(`${process.cwd()}/kodyrc.yml`, 'utf-8');
+    rc = JSON.parse(ymlrc);
+  } catch (err) {
+    throw Error('Error: Missing .kodyrc or kodyrc.yml file');
+  }
+}
 
 const defaults    = {
   name: 'Generic task',

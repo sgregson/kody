@@ -6,6 +6,7 @@ require('babel-polyfill');
 const fs   = require('fs'),
   inquirer = require('inquirer'),
   winston  = require('winston');
+  YAML     = require('yamljs');
 
 let rc;
 
@@ -49,11 +50,10 @@ const PROPS = {
       rc = JSON.parse(fs.readFileSync(`${process.cwd()}/.kodyrc`, 'utf-8'));
     } catch (err1) {
       try {
-        YAML=require('yamljs');
         let ymlrc = YAML.load(`${process.cwd()}/kodyrc.yml`, 'utf-8');
         rc = JSON.parse(ymlrc);
       } catch (err) {
-        throw Error('Missing .kodyrc or kodyrc.yml file');
+        throw Error('Error: Missing .kodyrc or kodyrc.yml file');
       }
     }
     let files = getTasks(`${__dirname}/tasks`);
