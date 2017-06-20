@@ -49,6 +49,9 @@ const PROPS     = {
 
               if (!shell.error())
                 winston.info(`successfully moved dir to ${destination}.bak/`)
+            } else {
+              // Safety failed, kill the offending file
+              shell.rm('-rf', destination);
             }
           }
 
