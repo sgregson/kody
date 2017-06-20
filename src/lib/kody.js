@@ -63,6 +63,7 @@ const PROPS = {
       const taskOpts = require(`${file}`).options;
       const newChoice = {
         name: `${taskOpts.name} - ${taskOpts.description}`,
+        checked: taskOpts.default || false,
         value: taskOpts
       };
       PROPS.TASKS_QUERY.choices.push(newChoice);
