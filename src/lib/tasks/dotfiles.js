@@ -14,7 +14,7 @@ const PROPS     = {
     FILE_SUFFIX: '.link'
   },
   options = {
-    name: 'DotFiles',
+    name: ' DotFiles',
     description: 'sets up symlinks for global dotfiles',
     exec: function(resolve) {
       const $HOME  = shell.exec(PROPS.HOME_CMD, {
