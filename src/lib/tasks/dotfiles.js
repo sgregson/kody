@@ -19,7 +19,7 @@ const PROPS     = {
     exec: function(resolve) {
       const $HOME  = shell.exec(PROPS.HOME_CMD, {
           silent: true
-        }).output.trim(),
+        }).stdout.trim(),
         dotFiles = shell.find('.')
           .filter(function(file) {
             return file.match(PROPS.FILE_REGEXP);
