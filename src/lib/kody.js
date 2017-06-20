@@ -47,8 +47,14 @@ const PROPS = {
     welcome();
     try {
       rc = JSON.parse(fs.readFileSync(`${process.cwd()}/.kodyrc`, 'utf-8'));
-    } catch (err) {
-      throw Error('Missing .kodyrc file.');
+    } catch (err1) {
+      try {
+        YAML=require('yamljs');
+        let ymlrc = YAML.load(`${process.cwd()}/kodyrc.yml`, 'utf-8');
+        rc = JSON.parse(ymlrc);
+      } catch (err) {
+        throw Error('Missing .kodyrc or kodyrc.yml file');
+      }
     }
     let files = getTasks(`${__dirname}/tasks`);
     for (const dir of fs.readdirSync(process.cwd())) {
