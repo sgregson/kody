@@ -23,7 +23,7 @@ const PROPS     = {
         }).stdout.trim(),
         dotFiles = shell.find('.')
           .filter(function(file) {
-            return file.match(PROPS.FILE_REGEXP) && basename.indexOf('node_modules') === -1;
+            return file.match(PROPS.FILE_REGEXP);
           });
 
       if (dotFiles.length > 0)
@@ -37,19 +37,45 @@ const PROPS     = {
 
           if (shell.test('-L', destination)) {
             if (shell.test('-f', destination)) {
+              // F I L E    L I N K
+              // .cat() and .to() breaks symlink and creates simple backup
               shell.cat(destination)
                 .to(`${destination}.bak`);
 
               if (!shell.error())
-                winston.info(`successfully backed up to ${destination}.bak`)
+                winston.info(`FILE successfully backed up to ${destination}.bak`)
 
               shell.rm(destination);
             } else if (shell.test('-d', destination)) {
-              shell.rm(`${destination}.bak`);
-              shell.mv(`${destination}`, `${destination}.bak`);
+              // D I R    L I N K
+              // remove old backup, mkdir backup dir, copy contents to backup, rm
+              let errs = false;
+              shell.rm('-rf', `${destination}.bak`);
+              if (shell.error()) {
+                errs = true || errs;
+                winston.error('failed to remove .bak');
+              }
 
-              if (!shell.error())
-                winston.info(`successfully moved dir to ${destination}.bak/`)
+              shell.mkdir(`${destination}.bak`);
+              if (shell.error()) {
+                errs = true || errs;
+                winston.error('failed to make .bak')
+              }
+
+              shell.cp('-RfL', `${destination}/**/*`, `${destination}.bak`);
+              if (shell.error()) {
+                errs = true || errs;
+                winston.error('failed to cp into .bak');
+              }
+
+              if (!errs) {
+                winston.info(`DIR successfully backed-up to ${destination}.bak/`)
+              }
+
+              shell.rm('-rf', destination);
+              if (shell.error()) {
+                winston.error(`Failed to delete ${destination}`)
+              }
             } else {
               // Safety failed, kill the offending file
               shell.rm('-rf', destination);
