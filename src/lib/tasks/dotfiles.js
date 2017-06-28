@@ -35,7 +35,14 @@ const PROPS     = {
           basename = basename.replace(PROPS.FILE_SUFFIX, '');
           const destination = `${$HOME}/.${basename}`;
 
+          const truncated = {
+            'source': source.replace(/\/$/,''),
+            'destination': destination.replace(/\/$/,'')
+          };
+
           if (shell.test('-L', destination)) {
+            winston.log(`found symlink at ${destination}`);
+
             if (shell.test('-f', destination)) {
               // F I L E    L I N K
               // .cat() and .to() breaks symlink and creates simple backup
@@ -80,7 +87,22 @@ const PROPS     = {
               // Safety failed, kill the offending file
               shell.rm('-rf', destination);
             }
+          } else {
+            if (shell.test('-d', destination)) {
+              winston.info(`non-symbolic directory at ${destination}`);
+              winston.info(`cp -r ${truncated.destination}/* into ${truncated.source}`)
+              shell.cp('-r', `${truncated.destination}/*`, truncated.source);
+              if (!shell.error()) {
+                winston.success(`copied existing files from ${destination} into ${source}`);
+                shell.rm('-rf', truncated.destination);
+                winston.success('symlink ready!!');
+              } else {
+                winston.error(`couldn't copy existing files`);
+                winston.info(`manually move it yourself`);
+              }
+            }
           }
+
 
           shell.ln('-sf', source, destination);
           if (!shell.error()) {
